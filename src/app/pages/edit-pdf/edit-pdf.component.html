@@ -1,0 +1,72 @@
+<div class="container-fluid" style="height: 100vh;">
+    <div class="row">
+        <div class="col-md-2" id="thumbnail-container" #thumbnailContainer>
+        </div>
+        <div class="col-md-8">
+            <div class="containt-pages">
+                <canvas #pdfCanvas></canvas>
+                <div class="contain_input" #containInput style="width: 918px;
+                    height: 1188px;
+                    position: relative;
+                    margin: auto;">
+                    <canvas #inputCanvas (mousedown)="startDrawing($event)" (mousemove)="drawWhileDragging($event)"
+                        (mouseup)="endDrawing($event)"></canvas>
+                    <input *ngFor="let i of inputs" type="{{i.type}}" [style.position]="'absolute'" [style.left]="i.x"
+                        [style.width]="i.width" [style.top]="i.y" [style.height]="i.height" (click)="onSelectedInput(i)"
+                        style="border: none;border-bottom: 1px;background-color: #26255852;" [checked]="i.checked">
+                </div>
+            </div>
+
+            <div class="boton" (click)="pdfUrl==null?selectFile():addMetadataAndSave()">
+            </div>
+
+            <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" style="display: none;" />
+        </div>
+        <div *ngIf="input" class="col-md-2 color-menu d-flex flex-column align-items-center" style="padding-top: 77px;">
+            <div>
+                <input type="text" class="form-control labelInout" [(ngModel)]="label" (ngModelChange)="changeLabel()"
+                    placeholder="field name">
+            </div>
+            <div class="line"></div>
+            <div class="row">
+
+
+
+                <div class="text_button row" (click)="selectedIn('text')"
+                    [ngClass]="{'active_text_button': input!.type === 'text'}">
+                    <div class="type_button">
+                        <img src="assets/icons/icono_input_text.png" alt="" srcset="">
+                    </div>
+                    <span class="white">Text</span>
+                </div>
+
+                <div class="text_button row" (click)="selectedIn('radio')"
+                    [ngClass]="{'active_text_button': input!.type === 'radio'}">
+                    <div class="type_button ">
+                        <img src="assets/icons/input_radio.png" alt="" srcset="">
+                    </div>
+                    <span class="white">Radio</span>
+                </div>
+
+                <div class="text_button row" (click)="selectedIn('checkbox')"
+                    [ngClass]="{'active_text_button': input!.type === 'checkbox'}">
+                    <div class="type_button">
+                        <img src="assets/icons/input-checkbox.png" alt="" srcset="">
+                    </div>
+                    <span class="white">Checkbox</span>
+                </div>
+            
+
+            </div>
+            <div *ngIf="input!.type === 'checkbox'||input!.type === 'radio'">
+                <label for="" class="white">
+                    Estado :  
+                </label>
+                <Input type="checkbox" [checked]="input.checked" (click)="changeCheck(input)">
+            </div>
+
+            <button type="button" (click)="deleteInputById()" class="btn btn-danger text-center">Eliminar</button>
+
+
+        </div>
+    </div>

@@ -1,0 +1,175 @@
+.container-fluid {
+
+
+
+    background: #01003C;
+
+}
+
+
+.color-menu {
+
+    background-color: #262558;
+    height: 100vh;
+}
+
+.menu {
+    width: 100%;
+    height: 50px;
+    background-color: #262558;
+
+}
+
+.pagina {
+
+    // background-color: white;
+    width: 100%;
+    height: 900px;
+    box-shadow: 0px 3px 6px #00000029;
+    border-radius: 9px;
+    margin: 10px;
+
+}
+
+canvas {
+    margin: auto;
+    right: 0px;
+    left: 0px;
+    position: absolute;
+}
+
+.containt-pages {
+    width: 100%;
+    height: 100vh;
+    overflow-x: auto;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    padding: 20px;
+    padding-top: 100px;
+
+
+
+}
+
+.boton {
+    /* Layout Properties */
+    position: absolute;
+    width: 138px;
+    height: 64px;
+    bottom: 20px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    /* UI Properties */
+    background: #262558 0% 0% no-repeat padding-box;
+    transition: 0.2s;
+
+    border-radius: 13px;
+    opacity: 1;
+}
+
+.boton:hover {
+    width: 300px;
+
+    box-shadow: 0px 3px 6px #01003C83;
+    transition: 0.2s;
+}
+
+.activate_bottom {
+    width: 300px;
+
+    box-shadow: 0px 3px 6px #01003C83;
+    transition: 0.2s;
+}
+
+#thumbnail-container {
+    height: 100vh;
+
+    overflow-y: auto;
+}
+
+.type_button {
+    /* Layout Properties */
+    top: 750px;
+    left: 1507px;
+    width: 20px;
+    /* UI Properties */
+    margin: auto;
+    opacity: 1;
+    cursor: pointer;
+    // padding: 10px;
+
+}
+
+.text_button {
+
+    margin: auto;
+    margin-top: 16px;
+    color: black;
+    text-align: center;
+    font-weight: 700;
+    // width: 100px;
+    border: 1px solid #01003C;
+    border-radius: 9px;
+    // height: 125px;
+    margin-left: 7px;
+    padding: 3px;
+span{
+    margin: 3px;
+}
+
+}
+
+.text_button:hover {
+
+
+    border: 1px solid #262558;
+
+    background: #6967df 0% 0% no-repeat padding-box;
+
+    img {
+
+        opacity: 0.3;
+    }
+
+
+}
+.active_text_button{
+    border: 1px solid #262558;
+
+    background: #6967df 0% 0% no-repeat padding-box;
+
+    img {
+
+        opacity: 0.3;
+    }
+}
+
+
+img {
+
+    width: 100%;
+}
+.line{
+    width: 100%;
+    height: 2px;
+    background-color: #01003C;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+button{
+    margin-top: 50px;
+}
+.labelInout{
+    background-color: #01003c;
+    border: none;
+    color: white;
+}
+
+ .white{
+    color: white!important;
+}
