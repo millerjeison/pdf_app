@@ -13,11 +13,20 @@
                         (mouseup)="endDrawing($event)"></canvas>
                     <input *ngFor="let i of inputs" type="{{i.type}}" [style.position]="'absolute'" [style.left]="i.x"
                         [style.width]="i.width" [style.top]="i.y" [style.height]="i.height" (click)="onSelectedInput(i)"
-                        style="border: none;border-bottom: 1px;background-color: #26255852;" [checked]="i.checked">
+                        style="border: none;border-bottom: 1px;background-color: #26255852;" [checked]="i.checked" >
+
+                        <!-- [disabled]="true" -->
                 </div>
             </div>
 
             <div class="boton" (click)="pdfUrl==null?selectFile():addMetadataAndSave()">
+
+            <div >
+                {{pdfUrl==null?'Subir archivo':'Guardar archivo'}}
+                
+                </div>
+
+
             </div>
 
             <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" style="display: none;" />
