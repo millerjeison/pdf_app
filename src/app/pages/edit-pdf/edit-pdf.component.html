@@ -13,19 +13,27 @@
                         (mouseup)="endDrawing($event)"></canvas>
                     <input *ngFor="let i of inputs" type="{{i.type}}" [style.position]="'absolute'" [style.left]="i.x"
                         [style.width]="i.width" [style.top]="i.y" [style.height]="i.height" (click)="onSelectedInput(i)"
-                        style="border: none;border-bottom: 1px;background-color: #26255852;" [checked]="i.checked" >
+                        style="border: none;border-bottom: 1px;background-color: #26255852;" [checked]="i.checked">
 
-                        <!-- [disabled]="true" -->
+                    <!-- [disabled]="true" -->
+
                 </div>
             </div>
 
-            <div class="boton" (click)="pdfUrl==null?selectFile():addMetadataAndSave()">
+            <div class="boton" [ngClass]="{'boton_text':delete}">
 
-            <div >
-                {{pdfUrl==null?'Subir archivo':'Guardar archivo'}}
-                
+                <div class="icon-menu" *ngIf="!delete" (click)="handleClick()">
+                    <i [ngClass]="pdfUrl == null ? 'bi bi-file-earmark-plus' : 'bi bi-download'"></i>
+                    <span>{{pdfUrl==null?' New file':' Save '}}</span>
                 </div>
-
+                <div class="icon-menu" *ngIf="pdfUrl != null&& !delete" (click)=" confirm()">
+                    | <i class="bi bi-trash2-fill delete"></i>
+                </div>
+                <div class="icon-menu confirm-delete delete" *ngIf="delete">
+                    <span>Are you sure you want to delete it?</span> | <i class="bi bi-check-circle-fill"
+                        (click)=" resetComponent()"></i>  <i class="bi bi-x-circle-fill"
+                        (click)="cancel()"></i>
+                </div>
 
             </div>
 
@@ -37,43 +45,64 @@
                     placeholder="field name">
             </div>
             <div class="line"></div>
-            <div class="row">
-
-
-
-                <div class="text_button row" (click)="selectedIn('text')"
-                    [ngClass]="{'active_text_button': input!.type === 'text'}">
-                    <div class="type_button">
-                        <img src="assets/icons/icono_input_text.png" alt="" srcset="">
-                    </div>
-                    <span class="white">Text</span>
-                </div>
-
-                <div class="text_button row" (click)="selectedIn('radio')"
-                    [ngClass]="{'active_text_button': input!.type === 'radio'}">
-                    <div class="type_button ">
-                        <img src="assets/icons/input_radio.png" alt="" srcset="">
-                    </div>
-                    <span class="white">Radio</span>
-                </div>
-
-                <div class="text_button row" (click)="selectedIn('checkbox')"
-                    [ngClass]="{'active_text_button': input!.type === 'checkbox'}">
-                    <div class="type_button">
-                        <img src="assets/icons/input-checkbox.png" alt="" srcset="">
-                    </div>
-                    <span class="white">Checkbox</span>
-                </div>
-            
-
+            <div class="text-separator">
+                <i class="bi bi-caret-down"></i> <span>
+                    Field types
+                </span>
             </div>
-            <div *ngIf="input!.type === 'checkbox'||input!.type === 'radio'">
+            <div class="toolbar">
+
+
+                <button class="btn icon-button" (click)="selectedIn('image')"
+                    [ngClass]="{'icon-button-active': input!.type === 'image'}">
+                    <i class="bi bi-image"></i>
+                </button>
+
+                <button class="btn icon-button" (click)="selectedIn('text')"
+                    [ngClass]="{'icon-button-active': input!.type === 'text'}">
+                    <i class="bi bi-fonts"></i>
+                </button>
+                <button class="btn icon-button" (click)="selectedIn('radio')"
+                    [ngClass]="{'icon-button-active': input!.type === 'radio'}">
+                    <i class="bi bi-ui-radios-grid"></i>
+                </button>
+                <button class="btn icon-button" (click)="selectedIn('checkbox')"
+                    [ngClass]="{'icon-button-active': input!.type === 'checkbox'}">
+                    <i class="bi bi-check2-square"></i>
+                </button>
+            </div>
+            <div class="text-separator">
+                <i class="bi bi-caret-down"></i> <span>
+                    Field properties
+                </span>
+            </div>
+            <div class="row" style="width: 162px;">
+
+                <div class="input-toggle-container">
+                    <div class="toggle-indicator">{{med(input!.width)}}</div>
+                    <div class="toggle-label"> W</div>
+                </div>
+
+                <div class="input-toggle-container">
+                    <div class="toggle-indicator">{{med(input!.x)}}</div>
+                    <div class="toggle-label"> X</div>
+                </div>
+                <div class="input-toggle-container">
+                    <div class="toggle-indicator">{{med(input!.height)}}</div>
+                    <div class="toggle-label"> H</div>
+                </div>
+                <div class="input-toggle-container">
+                    <div class="toggle-indicator">{{med(input!.y)}}</div>
+                    <div class="toggle-label"> Y</div>
+                </div>
+            </div>
+
+            <div class="toolbar2" *ngIf="input!.type === 'checkbox'||input!.type === 'radio'">
                 <label for="" class="white">
-                    Estado :  
+                    Status :
                 </label>
                 <Input type="checkbox" [checked]="input.checked" (click)="changeCheck(input)">
             </div>
-
             <button type="button" (click)="deleteInputById()" class="btn btn-danger text-center">Eliminar</button>
 
 

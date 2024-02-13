@@ -32,13 +32,14 @@ export class EditPdfComponent {
   fileName?: string
 
   @ViewChild('fileInput') fileInput!: ElementRef;
-  @ViewChild('pdfCanvas') pdfCanvas!: ElementRef;
+  @ViewChild('pdfCanvas') pdfCanvas!: ElementRef
   @ViewChild('inputCanvas') drawingCanvas!: ElementRef;
   @ViewChild('containInput') containInput!: ElementRef;
   @ViewChild('thumbnailContainer') thumbnailContainer!: ElementRef;
 
   private rectangleCounter = 0;
   private inputsData: any[] = [];
+  delete: boolean=false;
 
   constructor() { }
 
@@ -73,7 +74,7 @@ export class EditPdfComponent {
         thumbnailCanvas.width = viewport.width;
         thumbnailCanvas.height = viewport.height;
 
-        
+
         const thumbnailContext = thumbnailCanvas.getContext('2d') as CanvasRenderingContext2D;
         const renderContext = {
           canvasContext: thumbnailContext,
@@ -197,8 +198,8 @@ export class EditPdfComponent {
       firstPage.getAnnotations().then(annotations => {
         annotations.forEach(annotation => {
 
-          console.log('annotation',annotation);
-          
+          console.log('annotation', annotation);
+
         });
 
       })
@@ -206,7 +207,7 @@ export class EditPdfComponent {
 
       let Keywords = (metadata.info as any).Keywords;
       // Verificar si 'Keywords' existe y no está vacío
-      if (Keywords&&Keywords.length > 0) {
+      if (Keywords && Keywords.length > 0) {
         // Parsear el contenido de 'Keywords' que está en formato string JSON
         const keywordsData = JSON.parse(Keywords);
         for (const i of keywordsData) {
@@ -293,7 +294,7 @@ export class EditPdfComponent {
   drawRectangle(x: number, y: number, width: number, height: number) {
     const canvas = this.drawingCanvas.nativeElement;
     const context = canvas.getContext('2d')!;
-    context.strokeStyle = 'red';
+    context.strokeStyle = '#1B1B1B';
     context.lineWidth = 2;
     context.strokeRect(x, y, width, height);
   }
@@ -410,6 +411,13 @@ export class EditPdfComponent {
   }
 
 
+  med(value: String) {
+
+
+    let numero = value.replace('px', '');
+    return numero.split('.')[0];
+  }
+
   changeLabel() {
     this.input!.label = this.label;
 
@@ -463,6 +471,72 @@ export class EditPdfComponent {
       console.error('Error al procesar el PDF:', error);
     }
   }
+
+  handleClick(): void {
+    if (this.pdfUrl == null) {
+      this.selectFile();
+    } else {
+      this.addMetadataAndSave();
+    }
+  }
+
+  confirm(){
+    this.delete=true;
+  }
+  cancel(){
+    this.delete=false;
+  }
+  clearCanvas2(): void {
+    if (this.pdfCanvas && this.pdfCanvas.nativeElement) {
+      const context: CanvasRenderingContext2D = this.pdfCanvas.nativeElement.getContext('2d');
+      context.clearRect(0, 0, this.pdfCanvas.nativeElement.width, this.pdfCanvas.nativeElement.height);
+    }
+  }
+  resetComponent() {
+
+this.  cancel()
+
+    // Resetear URL del PDF y datos relacionados
+    this.pdfUrl = null;
+    this.pdfData = null;
+    this.clearCanvas2();
+    // Desactivar el modo de dibujo y resetear las coordenadas de dibujo
+    this.isDrawingMode = false;
+    this.startDrawX = 0;
+    this.startDrawY = 0;
+    this.endDrawX = 0;
+    this.endDrawY = 0;
+  
+    // Limpiar el viewport
+    this.viewport = undefined;
+  
+    // Resetear los metadatos y las entradas
+    this.metadata = [];
+    this.inputs = [];
+    this.paneInit = 1;
+    this.input = null;
+  
+    // Desseleccionar cualquier rectángulo o input seleccionado
+    this.selectedRectangle = null;
+    this.selectedInput = null;
+    this.selectedInputType = 'text';
+  
+    // Resetear etiqueta y nombre del archivo
+    this.label = undefined;
+    this.fileName = undefined;
+  
+    // Resetear contadores y datos
+    this.rectangleCounter = 0;
+    this.inputsData = [];
+  
+    // Limpiar las miniaturas y los canvas
+    this.clearThumbnails();
+    this.clearCanvas();
+  
+    // Si hay un input de archivo, resetearlo también
+    this.fileInput.nativeElement.value = '';
+  }
+  
 }
 interface metaData {
   pageNumber: number;
