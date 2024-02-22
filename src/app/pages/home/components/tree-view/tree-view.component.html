@@ -1,0 +1,18 @@
+<!-- tree-view.component.html -->
+<ul class="tree-container">
+    <ng-container *ngFor="let item of items">
+      <li [class]="{'expanded': item.expanded, 'selected': item.selected}">
+        <div class="tree-item" [style.paddingLeft.px]="item.level * 10">
+          <span *ngIf="item.children" (click)="toggle(item)">
+            {{ item.expanded ? '▼  ' : '►  '  }}
+          </span>
+          <span (click)="selectItem(item)" class="name-folder">
+            {{ item.name }}
+          </span>
+        </div>
+        <ul *ngIf="item.children && item.expanded">
+          <app-tree-view [items]="item.children"></app-tree-view>
+        </ul>
+      </li>
+    </ng-container>
+  </ul>

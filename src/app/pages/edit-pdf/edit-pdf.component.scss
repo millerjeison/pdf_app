@@ -7,11 +7,7 @@
 }
 
 
-.color-menu {
 
-    background-color: #242424;
-    height: 100vh;
-}
 
 .menu {
     width: 100%;
@@ -178,11 +174,7 @@ img {
 }
 
 
-.labelInout {
-    background-color: #333;
-    border: none;
-    color: white;
-}
+
 
 .icon-menu {
     margin: auto;
@@ -312,4 +304,36 @@ img {
         color: #d83333;
 
     }
+}
+
+.newF{
+    color:white;
+    cursor: pointer;
+    margin: auto;
+    padding: 5px;
+  
+   
+
+}
+
+.menu-save{
+    color:white;
+    display: flex;
+}
+select{
+   background-color:  #252525!important
+}
+.separator{
+    border-left: white 1px solid;
+    padding: 4px;
+}
+
+.modal-content {
+    background-color:#252525 ;
+    input::placeholder, textarea::placeholder {
+        color:white
+    }
+}
+.modal-body{
+    color: white;
 }

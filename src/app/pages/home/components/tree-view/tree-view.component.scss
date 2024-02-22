@@ -1,0 +1,44 @@
+// tree-view.component.scss
+.tree-container {
+    list-style: none;
+    padding: 0;
+
+
+color: #767676;
+
+
+    li {
+      position: relative;
+      padding: 5px;
+      cursor: pointer;
+      color:white
+
+      &.expanded:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 2px;
+        // background-color: blue;
+        height: 100%;
+      }
+  
+      &.selected {
+        background-color: lightblue;
+      }
+    }
+  
+    .tree-item {
+      display: flex;
+      align-items: center;
+  
+      span {
+        user-select: none;
+      }
+    }
+  }
+
+  .name-folder{
+    font-size: 11px;
+    margin: 8px;
+  }

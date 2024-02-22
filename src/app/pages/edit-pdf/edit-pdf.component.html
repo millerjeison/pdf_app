@@ -20,19 +20,34 @@
                 </div>
             </div>
 
-            <div class="boton" [ngClass]="{'boton_text':delete}">
+            <div class="boton " [ngClass]="{'boton_text': boton_text()}">
 
-                <div class="icon-menu" *ngIf="!delete" (click)="handleClick()">
+                <div class="menu-save" *ngIf="isSave">
+                    <select class="form-select labelInout" [(ngModel)]="folderSelected" (change)="cambioDeOpcion()">
+                        <option value="-1">Select folder</option>
+                        <option *ngFor="let i of folders" [ngValue]="i">{{i.name}}</option>
+
+                    </select>
+
+                    <div class="separator"></div>
+                    <div class="newF" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <span>New folder </span> <i class="bi bi-folder-plus"></i>
+                    </div>
+
+                </div>
+                <div class="icon-menu" *ngIf="!delete&&!isSave" (click)="handleClick()">
                     <i [ngClass]="pdfUrl == null ? 'bi bi-file-earmark-plus' : 'bi bi-download'"></i>
                     <span>{{pdfUrl==null?' New file':' Save '}}</span>
                 </div>
+
+
+
                 <div class="icon-menu" *ngIf="pdfUrl != null&& !delete" (click)=" confirm()">
                     | <i class="bi bi-trash2-fill delete"></i>
                 </div>
                 <div class="icon-menu confirm-delete delete" *ngIf="delete">
                     <span>Are you sure you want to delete it?</span> | <i class="bi bi-check-circle-fill"
-                        (click)=" resetComponent()"></i>  <i class="bi bi-x-circle-fill"
-                        (click)="cancel()"></i>
+                        (click)=" resetComponent()"></i> <i class="bi bi-x-circle-fill" (click)="cancel()"></i>
                 </div>
 
             </div>
@@ -106,5 +121,50 @@
             <button type="button" (click)="deleteInputById()" class="btn btn-danger text-center">Eliminar</button>
 
 
+        </div>
+    </div>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="pad-input">
+                        <div class="m-input">
+                            <input type="text" class="form-control labelInout" [(ngModel)]="folder.name"
+                                placeholder="folder name">
+                        </div>
+                        <div class="m-input">
+                            <textarea id="story" class="form-control labelInout" [(ngModel)]="folder.description"
+                                rows="5" cols="33" placeholder="folder description">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary " data-bs-dismiss="modal" (click)="createFolder()">Save
+                        folder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    Do you want to save the file in the folder {{folderSelected?.name}}?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary " data-bs-dismiss="modal" (click)="addMetadataAndSave()
+                    ">Save folder</button>
+                </div>
+            </div>
         </div>
     </div>

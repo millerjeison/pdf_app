@@ -1,0 +1,96 @@
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="menu color-menu">
+            <div class="title_floders">
+
+            </div>
+            <div class="menu_folder">
+                <div class="tex_folder m-folder">
+                    <span>Folders</span>
+                </div>
+                <div class="m-folder">
+                    <i (click)="fusionNewFolder()" class="bi bi-folder-plus"></i>
+
+                </div>
+            </div>
+            <div class="pad-input" *ngIf="newFolder">
+
+
+                <div class="m-input">
+                    <input type="text" class="form-control labelInout" [(ngModel)]="folder.name"
+                        placeholder="folder name">
+                </div>
+                <div class="m-input">
+                    <textarea id="story" class="form-control labelInout" [(ngModel)]="folder.description" rows="5"
+                        cols="33" placeholder="folder description">
+
+                    </textarea>
+                </div>
+
+                <button type="button" class="btn btn-primary " (click)="createFolder()">Save folder</button>
+
+            </div>
+            <app-tree-view *ngIf="!newFolder" [items]="foldersAndFile"></app-tree-view>
+        </div>
+        <div class="col-md-9">
+            <div class="menu-top row">
+                <!-- <div class="btn-blue">
+
+                    <span>New file</span>
+
+
+                    <i class="bi bi-plus"></i>
+                </div> -->
+                <div class="col-md-10"></div>
+                <div class="col-md-2"> <button type="button" class="btn btn-primary" (click)="goToAbout()">
+                        New file
+                        <i class="bi bi-plus"></i> </button></div>
+
+
+            </div>
+            <div class="row">
+                <div class="target">
+                    <div class="container-title">
+                        <p>Titulo del documento</p>
+                        <div class="butns">
+                            <div class="round-button">
+                                <i class="bi bi-pen"></i>
+                            </div>
+                            <div class="round-button">
+                                <i class="bi bi-trash"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="target">
+                    <div class="container-title">
+
+                    </div>
+                </div>
+                <div class="target">
+                    <div class="container-title">
+
+                    </div>
+                </div>
+                <div class="target">
+                    <div class="container-title">
+
+                    </div>
+                </div>
+                <div class="target">
+                    <div class="container-title">
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+
+
+    </div>
+</div>

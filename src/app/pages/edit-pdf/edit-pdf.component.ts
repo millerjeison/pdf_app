@@ -1,6 +1,14 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import * as pdfjsLib from 'pdfjs-dist';
 import { PDFDocument, rgb } from 'pdf-lib';
+import { FolderService } from 'src/app/services/folder/folder.service';
+import { TreeItem } from '../home/components/tree-view/tree-view.component';
+import { ApiService } from 'src/app/services/api.service';
+import { Folder } from 'src/app/interfaces/folder';
+import { File } from 'src/app/interfaces/file';
+import { FileService } from 'src/app/services/file/file.service';
+import { Router } from '@angular/router';
+declare var $: any; // Declara $ si estás usando jQuery
 
 @Component({
   selector: 'app-edit-pdf',
@@ -30,6 +38,11 @@ export class EditPdfComponent {
 
   label?: string
   fileName?: string
+  folder: Folder = {
+    name: "",
+    description: ""
+  }
+  folderSelected?:Folder;
 
   @ViewChild('fileInput') fileInput!: ElementRef;
   @ViewChild('pdfCanvas') pdfCanvas!: ElementRef
@@ -39,10 +52,74 @@ export class EditPdfComponent {
 
   private rectangleCounter = 0;
   private inputsData: any[] = [];
-  delete: boolean=false;
+  delete: boolean = false;
+  isSave: boolean = false;
+  folders: Folder[] = [
+    // {
+    //   name:"empleados",
+    //   id: 1,
+    // },
+    // {
+    //   name:"ofisina",
+    //   id: 2,
+    // }
+ 
+  ];
+  
 
-  constructor() { }
+  constructor(private folderService: FolderService,   private router: Router, private apiService: ApiService,private fileService:FileService) {
 
+    this.loadData()
+  }
+
+
+
+
+  private async loadData() {
+    try {
+      let token = await this.apiService.getToken();
+      this.folderService.setToken(token);
+      this.loadFolders();
+    } catch (error) {
+      console.error('Error al obtener el token:', error);
+    }
+  }
+
+  private async loadFolders() {
+    this.folderService.getFolders().subscribe(folders => {
+      let level: number = 1;
+      let levelFile: number = 1;
+      for (const folder of folders) {
+        let treeItem: TreeItem | undefined;
+        levelFile = 1;
+      }
+      this.folders = folders;
+      $('#exampleModal2').modal('hide');
+    })
+  }
+
+  cambioDeOpcion() {
+    console.log('Objeto seleccionado:', this.folderSelected);
+    this. showModal();
+  }
+
+  showModal(): void {
+    $('#exampleModal2').modal('show');
+  }
+
+  createFolder() {
+
+    if (this.folder.name.trim().length == 0) {
+      this.folder.name = "New Folder"
+    }
+    this.folderService.createFolder(this.folder).subscribe(data => {
+      this.folders=[]
+      console.log("folder creado", data);
+      this.loadFolders();
+
+    })
+  }
+  // 
   selectFile(): void {
     if (!this.pdfUrl) {
       this.fileInput.nativeElement.click();
@@ -467,24 +544,41 @@ export class EditPdfComponent {
 
       link.download = `${newName}_modified.pdf`;
       link.click();
+      let file:File={
+        name:`${newName}_modified.pdf`,
+        idFolder:this.folderSelected?.id!,
+        rute:this.folderSelected?.name!
+      }
+
+      this.fileService.createFile(file)
+      $('#exampleModal2').modal('hide');
+   
+
+      this.router.navigate(['']);
+
     } catch (error) {
       console.error('Error al procesar el PDF:', error);
     }
   }
 
+  boton_text():boolean{
+
+    return this.delete||this.isSave;
+  }
   handleClick(): void {
     if (this.pdfUrl == null) {
       this.selectFile();
     } else {
-      this.addMetadataAndSave();
+      this.isSave=true;
+     
     }
   }
 
-  confirm(){
-    this.delete=true;
+  confirm() {
+    this.delete = true;
   }
-  cancel(){
-    this.delete=false;
+  cancel() {
+    this.delete = false;
   }
   clearCanvas2(): void {
     if (this.pdfCanvas && this.pdfCanvas.nativeElement) {
@@ -494,7 +588,7 @@ export class EditPdfComponent {
   }
   resetComponent() {
 
-this.  cancel()
+    this.cancel()
 
     // Resetear URL del PDF y datos relacionados
     this.pdfUrl = null;
@@ -506,37 +600,37 @@ this.  cancel()
     this.startDrawY = 0;
     this.endDrawX = 0;
     this.endDrawY = 0;
-  
+
     // Limpiar el viewport
     this.viewport = undefined;
-  
+
     // Resetear los metadatos y las entradas
     this.metadata = [];
     this.inputs = [];
     this.paneInit = 1;
     this.input = null;
-  
+
     // Desseleccionar cualquier rectángulo o input seleccionado
     this.selectedRectangle = null;
     this.selectedInput = null;
     this.selectedInputType = 'text';
-  
+
     // Resetear etiqueta y nombre del archivo
     this.label = undefined;
     this.fileName = undefined;
-  
+
     // Resetear contadores y datos
     this.rectangleCounter = 0;
     this.inputsData = [];
-  
+
     // Limpiar las miniaturas y los canvas
     this.clearThumbnails();
     this.clearCanvas();
-  
+
     // Si hay un input de archivo, resetearlo también
     this.fileInput.nativeElement.value = '';
   }
-  
+
 }
 interface metaData {
   pageNumber: number;
@@ -591,4 +685,7 @@ class Input {
       json.inputId
     );
   }
+
+
+
 }
