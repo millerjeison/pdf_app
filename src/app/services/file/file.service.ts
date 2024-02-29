@@ -25,8 +25,10 @@ export class FileService {
       "id_folder": file.idFolder,
       "rute": file.rute
     }
+
+    console.log({ "Datos createFile": data });
+
     this.apiCrudService.createItem(data, 'file', 'create_file').subscribe(datos => {
-      console.log('file', data);
     })
   }
   public getFilesByFolder(idFolder: number): Observable<File[]> {
@@ -34,6 +36,15 @@ export class FileService {
     return this.apiCrudService.getItemById(idFolder, 'files', 'get_files_by_folder');
 
   }
+  public uploadPDF(file: any, path: string): Promise<any> {
+    return this.apiCrudService.uploadPDF(file, path);
+  }
+
+
+  public getFiletiBlob(url: string) {
+    return this.apiCrudService.getFiletiBlob(url);
+  }
+
 }
 
 

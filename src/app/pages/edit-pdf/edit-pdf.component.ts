@@ -5,9 +5,9 @@ import { FolderService } from 'src/app/services/folder/folder.service';
 import { TreeItem } from '../home/components/tree-view/tree-view.component';
 import { ApiService } from 'src/app/services/api.service';
 import { Folder } from 'src/app/interfaces/folder';
-import { File } from 'src/app/interfaces/file';
+import { File as f } from 'src/app/interfaces/file';
 import { FileService } from 'src/app/services/file/file.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 declare var $: any; // Declara $ si estás usando jQuery
 
 @Component({
@@ -42,7 +42,7 @@ export class EditPdfComponent {
     name: "",
     description: ""
   }
-  folderSelected?:Folder;
+  folderSelected?: Folder;
 
   @ViewChild('fileInput') fileInput!: ElementRef;
   @ViewChild('pdfCanvas') pdfCanvas!: ElementRef
@@ -54,6 +54,7 @@ export class EditPdfComponent {
   private inputsData: any[] = [];
   delete: boolean = false;
   isSave: boolean = false;
+  edit: boolean = false;
   folders: Folder[] = [
     // {
     //   name:"empleados",
@@ -63,13 +64,19 @@ export class EditPdfComponent {
     //   name:"ofisina",
     //   id: 2,
     // }
- 
+
   ];
-  
 
-  constructor(private folderService: FolderService,   private router: Router, private apiService: ApiService,private fileService:FileService) {
 
-    this.loadData()
+  constructor(private folderService: FolderService, private route: ActivatedRoute, private router: Router, private apiService: ApiService, private fileService: FileService) {
+
+    this.loadData();
+    
+
+  }
+  ngOnInit(): void {
+    this.loadFileParam();
+
   }
 
 
@@ -100,7 +107,7 @@ export class EditPdfComponent {
 
   cambioDeOpcion() {
     console.log('Objeto seleccionado:', this.folderSelected);
-    this. showModal();
+    this.showModal();
   }
 
   showModal(): void {
@@ -113,7 +120,7 @@ export class EditPdfComponent {
       this.folder.name = "New Folder"
     }
     this.folderService.createFolder(this.folder).subscribe(data => {
-      this.folders=[]
+      this.folders = []
       console.log("folder creado", data);
       this.loadFolders();
 
@@ -125,7 +132,7 @@ export class EditPdfComponent {
       this.fileInput.nativeElement.click();
       return;
     }
-    this.addMetadataAndSave()
+    // this.addMetadataAndSave()
   }
 
   async renderPdfThumbnails() {
@@ -229,13 +236,41 @@ export class EditPdfComponent {
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
+
+  private async loadFileParam() {
+
+
+    this.route.queryParamMap.subscribe(params => {
+      console.log("rute_file", params.get('rute_file')); // Accede al parámetro 'parametro1'
+      const rutaArchivo = params.get('rute_file')!;
+      const nameFolder = params.get('name_folder')!;
+      // folderSelected
+      if (rutaArchivo) {
+        for (const i of this.folders) {
+          if (nameFolder == i.name) {
+            this.folderSelected = i;
+          }
+        }
+        this.edit = true;
+        this.fileService.getFiletiBlob(rutaArchivo).subscribe(blob => {
+          this.fileName = rutaArchivo.split('/').pop();
+          const file = new File([blob], this.fileName!, { type: "application/pdf" });
+          this.pdfUrl = URL.createObjectURL(file);
+          this.renderPdf();
+        });
+      }
+
+    });
+  }
+
+
   async onFileSelected(event: any) {
     this.inputs = [];
     const selectedFile = event.target.files[0];
 
     if (selectedFile && selectedFile.type === 'application/pdf') {
       this.fileName = selectedFile.name;
-      console.log('Nombre del archivo:', this.fileName);
+      console.log('Nombre del archivo:', this.fileName, selectedFile);
 
       this.pdfUrl = URL.createObjectURL(selectedFile);
       this.renderPdf();
@@ -257,6 +292,8 @@ export class EditPdfComponent {
   }
   async renderPdf() {
     const pdfUrl = this.pdfUrl;
+    console.log(pdfUrl);
+
 
     if (!pdfUrl) return;
 
@@ -523,8 +560,6 @@ export class EditPdfComponent {
     try {
       const existingPdfBytes = await fetch(this.pdfUrl!).then((res) => res.arrayBuffer());
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
-
-      // Asegúrate de que los metadatos están en el formato correcto, como un string JSON.
       const metadataString = JSON.stringify(this.metadata);
 
       // Aquí puedes añadir los metadatos como un campo de texto personalizado o como metadatos en el documento.
@@ -540,20 +575,21 @@ export class EditPdfComponent {
       link.href = URL.createObjectURL(blob);
 
       let newName = this.fileName?.replace('.pdf', '');
+      const fileName = `${newName}_modified.pdf`;
+      const newFile = new File([blob], fileName, { type: 'application/pdf' });
 
-
-      link.download = `${newName}_modified.pdf`;
-      link.click();
-      let file:File={
-        name:`${newName}_modified.pdf`,
-        idFolder:this.folderSelected?.id!,
-        rute:this.folderSelected?.name!
+      let dataFile = await this.fileService.uploadPDF(newFile, this.folderSelected?.name!);
+      console.log('ggggsxfgzfg', dataFile['result']['path']);
+      // link.download = `${newName}_modified.pdf`;
+      // link.click();
+      let file: f = {
+        name: `${newName}_modified.pdf`,
+        idFolder: this.folderSelected?.id!,
+        rute: dataFile['result']['path']
       }
+      if (!this.edit) this.fileService.createFile(file)
 
-      this.fileService.createFile(file)
       $('#exampleModal2').modal('hide');
-   
-
       this.router.navigate(['']);
 
     } catch (error) {
@@ -561,16 +597,21 @@ export class EditPdfComponent {
     }
   }
 
-  boton_text():boolean{
+  boton_text(): boolean {
 
-    return this.delete||this.isSave;
+    return this.delete || this.isSave;
   }
   handleClick(): void {
     if (this.pdfUrl == null) {
       this.selectFile();
     } else {
-      this.isSave=true;
-     
+      if (this.folderSelected) {
+
+        this.addMetadataAndSave()
+        return;
+      }
+      this.isSave = true;
+
     }
   }
 

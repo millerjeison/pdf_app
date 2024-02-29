@@ -25,7 +25,7 @@ export class ApiCrudService<T> {
 
   setToken(token: string) {
     this.token = token;
-    this.API_URL = this.document.baseURI.replaceAll('vizum_pdf/', '') ;
+    this.API_URL = this.document.baseURI.replaceAll('vizum_pdf/', '');
 
   }
 
@@ -56,6 +56,36 @@ export class ApiCrudService<T> {
     return this.http.post<any>(this.API_URL + endPoint, data, this.getHttpOptions())
   }
 
+
+
+
+  public uploadPDF(file: File, path: string) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        const base64Content = base64.split(',')[1]; // Eliminar el prefijo de URL de datos
+
+        // Construir el objeto JSON para la solicitud
+        const data = {
+          "file": base64Content,
+          "filename": file.name,
+          "path": `${path}/`
+        };
+
+        // Enviar el objeto JSON con el archivo en base64
+        this.http.post('/upload_pdf', data, this.getHttpOptions()).subscribe(
+          (response) => resolve(response),
+          (error) => reject(error)
+        );
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  }
   // Leer todos los Items
   getItems(endPoint: string, method: string): Observable<T[]> {
 
@@ -88,7 +118,13 @@ export class ApiCrudService<T> {
     // Post y maneja la respuesta dentro de un Observable
     return this.http.post<ApiResponse<T[]>>(url, data, this.getHttpOptions())
       .pipe(
-        map(response => response.result.data) // Mapea la respuesta para extraer la data
+        map(response=>{
+
+
+console.log("_____----",response.result.data);
+
+          return response.result.data
+        }) // Mapea la respuesta para extraer la data
       );
   }
   // Actualizar un Item por su ID
@@ -104,6 +140,10 @@ export class ApiCrudService<T> {
   deleteItem(id: number): Observable<any> {
     const url = `${this.API_URL}/${id}`;
     return this.http.delete<any>(url, this.getHttpOptions());
+  }
+
+  getFiletiBlob(url: string): Observable<Blob> {
+    return this.http.get(url, { responseType: 'blob' });
   }
 }
 

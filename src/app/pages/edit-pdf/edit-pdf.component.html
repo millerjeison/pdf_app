@@ -54,7 +54,8 @@
 
             <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" style="display: none;" />
         </div>
-        <div *ngIf="input" class="col-md-2 color-menu d-flex flex-column align-items-center" style="padding-top: 77px;">
+        <div *ngIf="input" class="col-md-2 color-menu d-flex flex-column align-items-center"
+            style="padding-top: 77px;z-index: 900000;">
             <div>
                 <input type="text" class="form-control labelInout" [(ngModel)]="label" (ngModelChange)="changeLabel()"
                     placeholder="field name">

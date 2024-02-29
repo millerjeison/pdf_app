@@ -31,7 +31,8 @@
                 <button type="button" class="btn btn-primary " (click)="createFolder()">Save folder</button>
 
             </div>
-            <app-tree-view *ngIf="!newFolder" [items]="foldersAndFile"></app-tree-view>
+            <app-tree-view *ngIf="!newFolder" [items]="foldersAndFile"
+                (itemSelected)="onItemSelected($event)"></app-tree-view>
         </div>
         <div class="col-md-9">
             <div class="menu-top row">
@@ -39,22 +40,30 @@
 
                     <span>New file</span>
 
-
+    color: white;
+    cursor: pointer;
                     <i class="bi bi-plus"></i>
                 </div> -->
-                <div class="col-md-10"></div>
+                <div class="col-md-10">
+                    <div class="col-md-2"> <button type="button" class="btn btn-home" (click)="goToHome()">
+                        
+                            <i class="bi bi-caret-left-fill"></i>Apps </button></div>
+                </div>
                 <div class="col-md-2"> <button type="button" class="btn btn-primary" (click)="goToAbout()">
                         New file
                         <i class="bi bi-plus"></i> </button></div>
 
 
+
             </div>
             <div class="row">
-                <div class="target">
+                <div *ngFor="let i of childrens" class="target"
+                    [style.background-image]="'url(data:image/png;base64,' + i.thumbnail + ')'">
+
                     <div class="container-title">
-                        <p>Titulo del documento</p>
+                        <p>{{i.name}}</p>
                         <div class="butns">
-                            <div class="round-button">
+                            <div class="round-button" (click)="edit(i)">
                                 <i class="bi bi-pen"></i>
                             </div>
                             <div class="round-button">
@@ -63,26 +72,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="target">
-                    <div class="container-title">
 
-                    </div>
-                </div>
-                <div class="target">
-                    <div class="container-title">
-
-                    </div>
-                </div>
-                <div class="target">
-                    <div class="container-title">
-
-                    </div>
-                </div>
-                <div class="target">
-                    <div class="container-title">
-
-                    </div>
-                </div>
             </div>
 
         </div>
