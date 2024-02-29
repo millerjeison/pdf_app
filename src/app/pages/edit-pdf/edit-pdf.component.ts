@@ -79,9 +79,6 @@ export class EditPdfComponent {
 
   }
 
-
-
-
   private async loadData() {
     try {
       let token = await this.apiService.getToken();
